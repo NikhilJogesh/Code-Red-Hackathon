@@ -1,5 +1,7 @@
 Who's Free?
 
+<img width="1913" height="926" alt="image" src="https://github.com/user-attachments/assets/7d99e5f4-929a-4059-9044-136b13f9f3c6" />
+
 
 Your campus buddy tracker — see who's available for hangouts without the awkward texts!
 
