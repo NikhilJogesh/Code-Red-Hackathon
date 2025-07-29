@@ -59,7 +59,7 @@ For Students:
 Real Talk: College is short, and good friends are hard to find. This app helps you spend more time together and less time figuring out when everyone's free.
 🔗 Try It Out
 
-[Live Demo] — Check it out yourself!
+https://drive.google.com/file/d/1g6GnkQHLHxQA_M47Qv98-asi4NDVsyMv/view?usp=drive_link — Check it out yourself!
 🚀 What's Next?
 
 We're thinking about adding:
