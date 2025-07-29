@@ -16,32 +16,23 @@ Ever wanted to grab coffee with a friend but didn't know if they were in class? 
 College is crazy busy! We've all been there:
 
 -Texting "Are you free?" and interrupting someone's lecture
-
 -Missing out on study groups because nobody knew who was available
-
 -Trying to plan hangouts with 5 different schedules
-
 -Feeling awkward about reaching out when friends might be busy
 
 Who's Free? makes all of this super easy.
 💡 How It Works
 
 -Set Up — Add your name and mark your class times
-
 -Add Friends — Invite your friends to join
-
 -See Who's Free — Check the app to see who's available right now
-
 -Hang Out — Plan coffee, study sessions, or just chill!
 
 🛠️ Built With
 
 -Simple Web Tech — HTML, CSS, and JavaScript (no fancy stuff needed!)
-
 -Works Offline — Everything saves on your device
-
 -Mobile Friendly — Looks great on phones and computers
-
 -Super Fast — No waiting around for things to load
 
 🏆 What We Achieved
@@ -61,11 +52,8 @@ We're just two college students who got tired of the "Are you free?" spam in our
 For Students:
 
 -More spontaneous hangouts (the best kind!)
-
 -Less awkward scheduling conversations
-
 -Better study groups when you know who's available
-
 -Stronger friendships through easier coordination
 
 Real Talk: College is short, and good friends are hard to find. This app helps you spend more time together and less time figuring out when everyone's free.
@@ -77,11 +65,8 @@ Real Talk: College is short, and good friends are hard to find. This app helps y
 We're thinking about adding:
 
 -Group event planning (pizza parties, anyone?)
-
 -Study buddy matching for specific subjects
-
 -Campus event integration
-
 -Maybe even a "who wants to grab food?" quick ping feature
 
 Made with ❤️ by two students who just wanted to hang out with friends more easily.
