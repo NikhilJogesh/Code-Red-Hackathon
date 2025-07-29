@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who's Free ?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .current-time {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 5px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .friend-registration {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .friend-registration input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .friend-registration input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .friends-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .friend-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .friend-card.selected {
+            border-left-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .friend-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .timetable-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .timetable-grid {
+            display: grid;
+            grid-template-columns: 100px repeat(13, 90px);
+            gap: 2px;
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 2px;
+            min-width: 1000px;
+        }
+
+        .header-cell {
+            background: #667eea;
+            color: white;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 0.75em;
+            font-weight: 600;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+
+        .day-cell {
+            background: #764ba2;
+            color: white;
+            font-weight: bold;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 0.9em;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .time-cell {
+            background: white;
+            border-radius: 5px;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .time-cell.lunch {
+            background: #ffc107;
+            color: #333;
+            font-weight: bold;
+            font-size: 0.8em;
+            cursor: default;
+        }
+
+        .time-cell.current {
+            border: 3px solid #28a745;
+            background: #d4edda;
+            animation: pulse 2s infinite;
+        }
+
+        .time-cell.free {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .time-cell.busy {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .time-cell:hover:not(.lunch) {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+
+        .drag-instructions {
+            background: #e7f3ff;
+            border: 2px solid #2196f3;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #1976d2;
+        }
+
+        .selection-mode {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .selection-mode label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .selection-mode input[type="radio"] {
+            display: none;
+        }
+
+        .selection-mode input[type="radio"]:checked + span {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .availability-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .availability-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .current-slot-info {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .available-friends {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .friend-status {
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .friend-status.available {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .friend-status.busy {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .status-icon {
+            font-size: 1.2em;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            color: #6c757d;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #dee2e6;
+            margin-top: 20px;
+        }
+
+        .creators {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .friend-registration {
+                flex-direction: column;
+            }
+            
+            .friend-registration input {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .current-time {
+                position: static;
+                margin-top: 15px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="current-time" id="currentTime"></div>
+            <h1>🎓 Who's Free ?</h1>
+            <p>Track when your friends are free during college hours</p>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('register')">👥 Register Friends</button>
+                <button class="tab" onclick="showTab('availability')">⏰ Check Availability</button>
+            </div>
+
+            <!-- Register Friends Tab -->
+            <div id="register" class="tab-content active">
+                <div class="section">
+                    <h2 style="margin-bottom: 20px; color: #333;">Add New Friend</h2>
+                    <div class="friend-registration">
+                        <input type="text" id="friendName" placeholder="Enter friend's name" />
+                        <button class="btn" onclick="addFriend()">Add Friend</button>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 style="margin-bottom: 20px; color: #333;">Registered Friends</h2>
+                    <div class="friends-list" id="friendsList">
+                        <!-- Friends will be added here -->
+                    </div>
+                </div>
+
+                <div class="section" id="timetableSection" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="color: #333;">Set Timetable for: <span id="selectedFriendName"></span></h2>
+                        <div>
+                            <button class="btn" onclick="saveTimetable()">Save Timetable</button>
+                            <button class="btn danger" onclick="clearTimetable()">Clear All</button>
+                        </div>
+                    </div>
+                    
+                    <div class="drag-instructions">
+                        <strong>📋 Instructions:</strong> Click and drag to select multiple time slots. Use the selection mode below to mark slots as busy or free.
+                    </div>
+
+                    <div class="selection-mode">
+                        <strong>Selection Mode:</strong>
+                        <label>
+                            <input type="radio" name="selectionMode" value="busy" checked>
+                            <span>❌ Mark as Busy</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="selectionMode" value="free">
+                            <span>✅ Mark as Free</span>
+                        </label>
+                    </div>
+                    
+                    <div class="timetable-container">
+                        <div class="timetable-grid" id="timetableGrid">
+                            <!-- Timetable will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check Availability Tab -->
+            <div id="availability" class="tab-content">
+                <div class="availability-section">
+                    <div class="availability-header">
+                        <h2 style="color: #333;">🕐 Real-Time Availability</h2>
+                        <button class="btn" onclick="refreshAvailability()">🔄 Refresh</button>
+                    </div>
+                    
+                    <div class="current-slot-info" id="currentSlotInfo">
+                        <!-- Current time slot info will be displayed here -->
+                    </div>
+
+                    <div class="available-friends" id="availabilityResults">
+                        <!-- Availability results will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Made with ❤️ by <span class="creators">Sarvesh</span> and <span class="creators">Nikhil</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Simplified timetable structure - single slots without LAB/THEORY distinction
+        const timeSlots = [
+            { start: "08:00", end: "08:50" },
+            { start: "08:55", end: "09:45" },
+            { start: "09:50", end: "10:40" },
+            { start: "10:45", end: "11:35" },
+            { start: "11:40", end: "12:30" },
+            { start: "12:35", end: "13:25" },
+            "Lunch",
+            { start: "14:00", end: "14:50" },
+            { start: "14:55", end: "15:45" },
+            { start: "15:50", end: "16:40" },
+            { start: "16:45", end: "17:35" },
+            { start: "17:40", end: "18:30" },
+            { start: "18:35", end: "19:25" }
+        ];
+
+        const days = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+        
+        let friends = JSON.parse(localStorage.getItem('friends')) || [];
+        let selectedFriend = null;
+        let isDragging = false;
+        let dragStartCell = null;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+            updateFriendsList();
+            refreshAvailability();
+        });
+
+        // Update current time display
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            if (tabName === 'availability') {
+                refreshAvailability();
+            }
+        }
+
+        // Add friend
+        function addFriend() {
+            const nameInput = document.getElementById('friendName');
+            const name = nameInput.value.trim();
+            
+            if (name && !friends.find(f => f.name === name)) {
+                const newFriend = {
+                    name: name,
+                    timetable: {}
+                };
+                friends.push(newFriend);
+                localStorage.setItem('friends', JSON.stringify(friends));
+                updateFriendsList();
+                nameInput.value = '';
+            } else if (friends.find(f => f.name === name)) {
+                alert('Friend already exists!');
+            }
+        }
+
+        // Update friends list display
+        function updateFriendsList() {
+            const friendsList = document.getElementById('friendsList');
+            if (friends.length === 0) {
+                friendsList.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No friends registered yet. Add some friends to get started!</p>';
+                return;
+            }
+            
+            friendsList.innerHTML = friends.map(friend => 
+                `<div class="friend-card ${selectedFriend?.name === friend.name ? 'selected' : ''}" onclick="selectFriend('${friend.name}')">
+                    <div>
+                        <div class="friend-name">👤 ${friend.name}</div>
+                        <small style="color: #666;">${Object.keys(friend.timetable).length > 0 ? 'Timetable set' : 'No timetable'}</small>
+                    </div>
+                    <button class="btn danger" style="padding: 5px 10px; font-size: 0.8em;" onclick="event.stopPropagation(); removeFriend('${friend.name}')">×</button>
+                </div>`
+            ).join('');
+        }
+
+        // Select friend for timetable editing
+        function selectFriend(name) {
+            selectedFriend = friends.find(f => f.name === name);
+            document.getElementById('selectedFriendName').textContent = name;
+            document.getElementById('timetableSection').style.display = 'block';
+            generateTimetable();
+            updateFriendsList();
+        }
+
+        // Remove friend
+        function removeFriend(name) {
+            if (confirm(`Are you sure you want to remove ${name}?`)) {
+                friends = friends.filter(f => f.name !== name);
+                localStorage.setItem('friends', JSON.stringify(friends));
+                updateFriendsList();
+                
+                if (selectedFriend?.name === name) {
+                    selectedFriend = null;
+                    document.getElementById('timetableSection').style.display = 'none';
+                }
+            }
+        }
+
+        // Generate simplified timetable grid
+        function generateTimetable() {
+            const grid = document.getElementById('timetableGrid');
+            let html = '';
+            
+            // Header row
+            html += '<div class="header-cell">Day</div>';
+            timeSlots.forEach((slot, index) => {
+                if (slot === 'Lunch') {
+                    html += '<div class="header-cell">Lunch</div>';
+                } else {
+                    html += `<div class="header-cell">Slot ${index + 1}<br><small>${slot.start}-${slot.end}</small></div>`;
+                }
+            });
+
+            // Generate rows for each day
+            days.forEach(day => {
+                html += `<div class="day-cell">${day}</div>`;
+                
+                timeSlots.forEach((slot, timeIndex) => {
+                    if (slot === 'Lunch') {
+                        html += '<div class="time-cell lunch">🍽️ Lunch</div>';
+                    } else {
+                        const cellId = `${day}-${timeIndex}`;
+                        const cellState = selectedFriend?.timetable[cellId] || 'free';
+                        const currentClass = isCurrentTimeSlot(day, timeIndex) ? 'current' : '';
+                        
+                        html += `
+                            <div class="time-cell ${cellState} ${currentClass}" 
+                                 data-cell-id="${cellId}"
+                                 onmousedown="startDrag('${cellId}')"
+                                 onmouseover="dragOver('${cellId}')"
+                                 onmouseup="endDrag()">
+                                ${cellState === 'busy' ? '❌ Busy' : '✅ Free'}
+                            </div>
+                        `;
+                    }
+                });
+            });
+            
+            grid.innerHTML = html;
+            
+            // Add mouse event listeners for drag functionality
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('mouseleave', endDrag);
+        }
+
+        // Drag functionality
+        function startDrag(cellId) {
+            if (event.target.classList.contains('lunch')) return;
+            
+            isDragging = true;
+            dragStartCell = cellId;
+            toggleCell(cellId);
+            event.preventDefault();
+        }
+
+        function dragOver(cellId) {
+            if (isDragging && !event.target.classList.contains('lunch')) {
+                toggleCell(cellId);
+            }
+        }
+
+        function endDrag() {
+            isDragging = false;
+            dragStartCell = null;
+        }
+
+        function toggleCell(cellId) {
+            const cell = document.querySelector(`[data-cell-id="${cellId}"]`);
+            if (!cell || cell.classList.contains('lunch')) return;
+            
+            const selectionMode = document.querySelector('input[name="selectionMode"]:checked').value;
+            
+            // Set the new state based on selection mode
+            selectedFriend.timetable[cellId] = selectionMode;
+            
+            // Update visual state
+            cell.classList.remove('free', 'busy');
+            cell.classList.add(selectionMode);
+            cell.textContent = selectionMode === 'busy' ? '❌ Busy' : '✅ Free';
+        }
+
+        // Check if current time slot
+        function isCurrentTimeSlot(day, timeIndex) {
+            const now = new Date();
+            const currentDay = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][now.getDay()];
+            const currentTime = now.getHours() * 100 + now.getMinutes();
+            
+            if (currentDay !== day) return false;
+            
+            const slot = timeSlots[timeIndex];
+            if (slot === 'Lunch') {
+                return currentTime >= 1300 && currentTime <= 1400;
+            }
+            
+            const startTime = parseInt(slot.start.replace(':', ''));
+            const endTime = parseInt(slot.end.replace(':', ''));
+            
+            return currentTime >= startTime && currentTime <= endTime;
+        }
+
+        // Save timetable
+        function saveTimetable() {
+            localStorage.setItem('friends', JSON.stringify(friends));
+            alert(`Timetable saved for ${selectedFriend.name}!`);
+            updateFriendsList();
+        }
+
+        // Clear timetable
+        function clearTimetable() {
+            if (confirm('Are you sure you want to clear all time slots?')) {
+                selectedFriend.timetable = {};
+                generateTimetable();
+            }
+        }
+
+        // Get current time slot info
+        function getCurrentTimeSlot() {
+            const now = new Date();
+            const currentDay = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][now.getDay()];
+            const currentTime = now.getHours() * 100 + now.getMinutes();
+            
+            if (!days.includes(currentDay)) {
+                return { day: currentDay, slot: 'Weekend', time: 'No college today!' };
+            }
+            
+            for (let i = 0; i < timeSlots.length; i++) {
+                const slot = timeSlots[i];
+                
+                if (slot === 'Lunch') {
+                    if (currentTime >= 1300 && currentTime <= 1400) {
+                        return { day: currentDay, slot: 'Lunch', time: '13:00 - 14:00' };
+                    }
+                    continue;
+                }
+                
+                const startTime = parseInt(slot.start.replace(':', ''));
+                const endTime = parseInt(slot.end.replace(':', ''));
+                
+                if (currentTime >= startTime && currentTime <= endTime) {
+                    return { 
+                        day: currentDay, 
+                        slot: `Slot ${i + 1}`, 
+                        time: `${slot.start} - ${slot.end}`,
+                        index: i
+                    };
+                }
+            }
+            
+            return { day: currentDay, slot: 'Break Time', time: 'Between classes' };
+        }
+
+        // Refresh availability
+        function refreshAvailability() {
+            const currentSlot = getCurrentTimeSlot();
+            const currentSlotInfo = document.getElementById('currentSlotInfo');
+            const availabilityResults = document.getElementById('availabilityResults');
+            
+            // Update current slot info
+            currentSlotInfo.innerHTML = `
+                <h3>📅 ${currentSlot.day} - ${currentSlot.slot}</h3>
+                <p>🕐 ${currentSlot.time}</p>
+            `;
+            
+            if (friends.length === 0) {
+                availabilityResults.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No friends registered yet!</p>';
+                return;
+            }
+            
+            if (currentSlot.slot === 'Weekend' || currentSlot.slot === 'Break Time') {
+                availabilityResults.innerHTML = friends.map(friend => 
+                    `<div class="friend-status available">
+                        <span class="status-icon">✅</span>
+                        <span>${friend.name} - ${currentSlot.slot === 'Weekend' ? 'Weekend' : 'Free time'}</span>
+                    </div>`
+                ).join('');
+                return;
+            }
+            
+            // Check availability for current time slot
+            const availabilityHTML = friends.map(friend => {
+                if (Object.keys(friend.timetable).length === 0) {
+                    return `<div class="friend-status available">
+                        <span class="status-icon">❓</span>
+                        <span>${friend.name} - No timetable set</span>
+                    </div>`;
+                }
+                
+                const isAvailable = !isStudentBusy(friend, currentSlot.day, currentSlot.index);
+                
+                return `<div class="friend-status ${isAvailable ? 'available' : 'busy'}">
+                    <span class="status-icon">${isAvailable ? '✅' : '❌'}</span>
+                    <span>${friend.name} - ${isAvailable ? 'Available' : 'In class'}</span>
+                </div>`;
+            }).join('');
+            
+            availabilityResults.innerHTML = availabilityHTML;
+        }
+
+        // Check if student is busy at given time (simplified for single slots)
+        function isStudentBusy(friend, day, timeIndex) {
+            if (timeIndex === undefined) return false;
+            
+            const cellId = `${day}-${timeIndex}`;
+            return friend.timetable[cellId] === 'busy';
+        }
+
+        // Handle Enter key in friend input
+        document.addEventListener('keypress', function(e) {
+            if (e.target.id === 'friendName' && e.key === 'Enter') {
+                addFriend();
+            }
+        });
+
+        // Auto-refresh availability every minute
+        setInterval(refreshAvailability, 60000);
+    </script>
+</body>
+</html>
