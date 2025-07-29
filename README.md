@@ -1,13 +1,17 @@
 Who's Free?
 
-<img width="1913" height="926" alt="image" src="https://github.com/user-attachments/assets/7d99e5f4-929a-4059-9044-136b13f9f3c6" />
+<img width="1887" height="935" alt="image" src="https://github.com/user-attachments/assets/6e87b8dd-81d5-49af-8758-bfd802555a99" />
 
 
 Your campus buddy tracker — see who's available for hangouts without the awkward texts!
 
+👥 Team Young Reds
+
+Sarvesh M — The guy who made it look good (Frontend)
+
+Nikhil J — The guy who made it work (Backend)
+
 🚀 What's This About?
-
-
 
 Ever wanted to grab coffee with a friend but didn't know if they were in class? Who's Free? solves that! It's a simple web app that shows you when your college friends are free to hang out.
 
@@ -74,13 +78,6 @@ Who's Free? makes all of this super easy.
 ✅ Privacy First — Your schedule stays on your device
 
 ✅ Actually Useful — Solves a real problem students face daily
-
-👥 Team Young Reds
-
-
-Sarvesh M — The guy who made it look good (Frontend)
-
-Nikhil J — The guy who made it work (Backend)
 
 
 
