@@ -1,4 +1,4 @@
-# Code-Red-Hackathon
+# Code-Red-Hackathon [Who's free?]
 Team "Young Reds" code submission for the hackathon 
 
 Who's Free?
